@@ -1,0 +1,16 @@
+= anagram-core
+
+.Description
+Bibliothèque de travail sur les palindromes. 
+Enrichi `String` pour fournir les fonctions suivantes.
+
+[source, javascript]
+----
+String.prototype.noAccent               = require('./replace-diacritics.js');
+String.prototype.noWhiteSpace           = function()          { /* ... */ };
+String.prototype.palindromeSanitization = function()          { /* ... */ };
+String.prototype.isPalindrome           = function()          { /* ... */ };
+String.prototype.isPalindromeOf         = function(versus)    { /* ... */ };
+String.prototype.palindromicIndexOf     = function(str)       { /* ... */ };
+String.prototype.filterPalindromicLines = function(separator) { /* ... */ };
+----

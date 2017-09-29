@@ -1,0 +1,11 @@
+{
+  "name": "anagram-core",
+  "version": "1.0.0",
+  "description": "Librairie de travail sur les anagrammes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "K3rn€l_P4n1K",
+  "license": "GPL-3.0"
+}
