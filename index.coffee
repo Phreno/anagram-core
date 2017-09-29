@@ -48,6 +48,52 @@ String::ALPHABET_NO_ACCENT=
   '':/[\u0300\u0301\u0302\u0303\u0308]/ig
 
 ###
+# Dictionnaire de référence
+# pour le tri fréquentiel
+# ###
+String::SORT_TABLE_FR={}
+String::SORT_TABLE_FR['e']=10.561
+String::SORT_TABLE_FR['i']=8.487
+String::SORT_TABLE_FR['a']=8.734
+String::SORT_TABLE_FR['s']=7.231
+String::SORT_TABLE_FR['r']=7.780
+String::SORT_TABLE_FR['n']=7.071
+String::SORT_TABLE_FR['t']=6.689
+String::SORT_TABLE_FR['o']=6.258
+String::SORT_TABLE_FR['u']=4.169
+String::SORT_TABLE_FR['l']=4.718
+String::SORT_TABLE_FR['c']=3.695
+String::SORT_TABLE_FR['p']=2.481
+String::SORT_TABLE_FR['m']=2.917
+String::SORT_TABLE_FR['é']=2.815
+String::SORT_TABLE_FR['d']=2.392
+String::SORT_TABLE_FR['v']=1.200
+String::SORT_TABLE_FR['h']=1.944
+String::SORT_TABLE_FR['g']=1.965
+String::SORT_TABLE_FR['f']=1.303
+String::SORT_TABLE_FR['b']=1.770
+String::SORT_TABLE_FR['*']=1.750
+String::SORT_TABLE_FR['y']=0.729
+String::SORT_TABLE_FR['q']=0.546
+String::SORT_TABLE_FR['k']=0.525
+String::SORT_TABLE_FR['z']=0.461
+String::SORT_TABLE_FR['x']=0.353
+String::SORT_TABLE_FR['è']=0.324
+String::SORT_TABLE_FR['j']=0.254
+String::SORT_TABLE_FR['w']=0.221
+String::SORT_TABLE_FR['â']=0.137
+String::SORT_TABLE_FR['ï']=0.066
+String::SORT_TABLE_FR['ê']=0.056
+String::SORT_TABLE_FR['ç']=0.051
+String::SORT_TABLE_FR['î']=0.046
+String::SORT_TABLE_FR['ô']=0.041
+String::SORT_TABLE_FR['û']=0.030
+String::SORT_TABLE_FR['ü']=0.023
+String::SORT_TABLE_FR['ë']=0.011
+String::SORT_TABLE_FR['à']=0.020
+String::SORT_TABLE_FR['ù']=0.001
+
+###
 # Retourne la chaîne sans accents
 # ###
 String::noAccent=()->
@@ -121,3 +167,28 @@ String::filterPalindromicLines=(separator='\n')->
     .forEach pushIfPalindrome
   return palindromes
 
+###
+# Récupère un objet qui dénombre
+# l'occurence de chaque caractère
+# ###
+String::signature=()->
+  object={}
+  buffer=strict?this.palindromeSanitization()
+  this.forEach (char)->
+    if not object[char]?
+      object[char]=0
+    object[char]++
+  return object
+
+###
+# Tri la chaîne par fréquence
+# ###
+String::frequencySort=()->
+  freqSort=(a,b)->
+    valA=String::SORT_TABLE_FR[a.toLowerCase()]
+    valB=String::SORT_TABLE_FR[b.toLowerCase()]
+    return valA-valB
+  return this
+    .split ''
+    .sort freqSort
+    .join ''

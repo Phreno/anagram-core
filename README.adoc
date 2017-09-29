@@ -4,13 +4,18 @@
 Bibliothèque de travail sur les palindromes. 
 Enrichi `String` pour fournir les fonctions suivantes.
 
+.Référence 
+La fonction noAccent est reprise depuis https://raw.githubusercontent.com/yvg/js-replace-diacritics/master/replace-diacritics.js
+
 [source, javascript]
 ----
-String.prototype.noAccent               = require('./replace-diacritics.js');
+String.prototype.noAccent               = function()          { /* ... */ };
 String.prototype.noWhiteSpace           = function()          { /* ... */ };
 String.prototype.palindromeSanitization = function()          { /* ... */ };
 String.prototype.isPalindrome           = function()          { /* ... */ };
 String.prototype.isPalindromeOf         = function(versus)    { /* ... */ };
 String.prototype.palindromicIndexOf     = function(str)       { /* ... */ };
 String.prototype.filterPalindromicLines = function(separator) { /* ... */ };
+String.prototype.signature              = function()          { /* ... */ };
+String.prototype.frequencySort          = function()          { /* ... */ };
 ----
