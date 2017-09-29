@@ -55,6 +55,95 @@
 
 
   /*
+   * Dictionnaire de référence
+   * pour le tri fréquentiel
+   *
+   */
+
+  String.prototype.SORT_TABLE_FR = {};
+
+  String.prototype.SORT_TABLE_FR['e'] = 10.561;
+
+  String.prototype.SORT_TABLE_FR['i'] = 8.487;
+
+  String.prototype.SORT_TABLE_FR['a'] = 8.734;
+
+  String.prototype.SORT_TABLE_FR['s'] = 7.231;
+
+  String.prototype.SORT_TABLE_FR['r'] = 7.780;
+
+  String.prototype.SORT_TABLE_FR['n'] = 7.071;
+
+  String.prototype.SORT_TABLE_FR['t'] = 6.689;
+
+  String.prototype.SORT_TABLE_FR['o'] = 6.258;
+
+  String.prototype.SORT_TABLE_FR['u'] = 4.169;
+
+  String.prototype.SORT_TABLE_FR['l'] = 4.718;
+
+  String.prototype.SORT_TABLE_FR['c'] = 3.695;
+
+  String.prototype.SORT_TABLE_FR['p'] = 2.481;
+
+  String.prototype.SORT_TABLE_FR['m'] = 2.917;
+
+  String.prototype.SORT_TABLE_FR['é'] = 2.815;
+
+  String.prototype.SORT_TABLE_FR['d'] = 2.392;
+
+  String.prototype.SORT_TABLE_FR['v'] = 1.200;
+
+  String.prototype.SORT_TABLE_FR['h'] = 1.944;
+
+  String.prototype.SORT_TABLE_FR['g'] = 1.965;
+
+  String.prototype.SORT_TABLE_FR['f'] = 1.303;
+
+  String.prototype.SORT_TABLE_FR['b'] = 1.770;
+
+  String.prototype.SORT_TABLE_FR['*'] = 1.750;
+
+  String.prototype.SORT_TABLE_FR['y'] = 0.729;
+
+  String.prototype.SORT_TABLE_FR['q'] = 0.546;
+
+  String.prototype.SORT_TABLE_FR['k'] = 0.525;
+
+  String.prototype.SORT_TABLE_FR['z'] = 0.461;
+
+  String.prototype.SORT_TABLE_FR['x'] = 0.353;
+
+  String.prototype.SORT_TABLE_FR['è'] = 0.324;
+
+  String.prototype.SORT_TABLE_FR['j'] = 0.254;
+
+  String.prototype.SORT_TABLE_FR['w'] = 0.221;
+
+  String.prototype.SORT_TABLE_FR['â'] = 0.137;
+
+  String.prototype.SORT_TABLE_FR['ï'] = 0.066;
+
+  String.prototype.SORT_TABLE_FR['ê'] = 0.056;
+
+  String.prototype.SORT_TABLE_FR['ç'] = 0.051;
+
+  String.prototype.SORT_TABLE_FR['î'] = 0.046;
+
+  String.prototype.SORT_TABLE_FR['ô'] = 0.041;
+
+  String.prototype.SORT_TABLE_FR['û'] = 0.030;
+
+  String.prototype.SORT_TABLE_FR['ü'] = 0.023;
+
+  String.prototype.SORT_TABLE_FR['ë'] = 0.011;
+
+  String.prototype.SORT_TABLE_FR['à'] = 0.020;
+
+  String.prototype.SORT_TABLE_FR['ù'] = 0.001;
+
+
+  /*
    * Retourne la chaîne sans accents
    *
    */
@@ -147,6 +236,43 @@
     };
     this.split(separator).forEach(pushIfPalindrome);
     return palindromes;
+  };
+
+
+  /*
+   * Récupère un objet qui dénombre
+   * l'occurence de chaque caractère
+   *
+   */
+
+  String.prototype.signature = function() {
+    var buffer, object;
+    object = {};
+    buffer = typeof strict === "function" ? strict(this.palindromeSanitization()) : void 0;
+    this.forEach(function(char) {
+      if (object[char] == null) {
+        object[char] = 0;
+      }
+      return object[char]++;
+    });
+    return object;
+  };
+
+
+  /*
+   * Tri la chaîne par fréquence
+   *
+   */
+
+  String.prototype.frequencySort = function() {
+    var freqSort;
+    freqSort = function(a, b) {
+      var valA, valB;
+      valA = String.prototype.SORT_TABLE_FR[a.toLowerCase()];
+      valB = String.prototype.SORT_TABLE_FR[b.toLowerCase()];
+      return valA - valB;
+    };
+    return this.split('').sort(freqSort).join('');
   };
 
 }).call(this);
