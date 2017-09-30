@@ -144,6 +144,16 @@
 
 
   /*
+   * Liste des mots en français
+   *
+   */
+
+  String.prototype.FRENCH_WORDS = require('fs').readFileSync('./rsc/francais.txt', {
+    encoding: 'utf8'
+  }).split('\n');
+
+
+  /*
    * Retourne la chaîne sans accents
    *
    */
@@ -151,8 +161,8 @@
   String.prototype.noAccent = function() {
     var flat;
     flat = this;
-    String.prototype.ALPHABET_NO_ACCENT.forEach(function(letter) {
-      flat = this.replace(String.prototype.ALPHABET_NO_ACCENT[letter], letter);
+    Object.keys(String.prototype.ALPHABET_NO_ACCENT).forEach(function(letter) {
+      flat = flat.replace(String.prototype.ALPHABET_NO_ACCENT[letter], letter);
     });
     return flat;
   };
@@ -173,8 +183,31 @@
    *
    */
 
-  String.prototype.palindromeSanitization = function() {
+  String.prototype.anagramSanitization = function() {
     return this.noWhiteSpace().noAccent().toLowerCase();
+  };
+
+
+  /*
+   * Vrai si l'argument est une anagramme
+   *
+   */
+
+  String.prototype.isAnagram = function(str) {
+    var anagram, origin;
+    origin = this.anagramSanitization().sortByFrequency();
+    anagram = str.anagramSanitization().sortByFrequency();
+    return origin === anagram;
+  };
+
+
+  /*
+   * Retourne le palindrome de la chaine
+   *
+   */
+
+  String.prototype.palindrome = function() {
+    return this.split('').reverse().join('');
   };
 
 
@@ -184,8 +217,19 @@
    */
 
   String.prototype.isPalindrome = function() {
-    var toCheck;
-    toCheck = this.palindromeSanitization();
+    var first, last, toCheck;
+    toCheck = this.anagramSanitization();
+
+    /*
+     * Pour les traitements en masse
+     * on souhaite sortir rapidement
+     *
+     */
+    first = toCheck.charAt(0);
+    last = toCheck.charAt(toCheck.length - 1);
+    if (first === !last) {
+      return false;
+    }
     return toCheck === toCheck.split('').reverse().join('');
   };
 
@@ -197,8 +241,17 @@
 
   String.prototype.isPalindromeOf = function(versus) {
     var lap, pal;
-    pal = this.palindromeSanitization();
-    lap = versus.palindromeSanitization();
+    pal = this.anagramSanitization();
+    lap = versus.anagramSanitization();
+
+    /*
+     * Pour les traitement en masse
+     * on souhaite sortir rapidement
+     *
+     */
+    if (pal.length === !lap.length) {
+      return false;
+    }
     return pal === lap.split('').reverse().join('');
   };
 
@@ -210,10 +263,13 @@
    */
 
   String.prototype.palindromicIndexOf = function(str) {
-    var origin, part;
-    origin = this.palindromeSanitization();
-    part = str.palindromeSanitization().split('').reverse().join('');
-    return this.palindromeSanitization().indexOf(part !== -1);
+    var origin, pal;
+    pal = str.anagramSanitization().split('').reverse().join('');
+    origin = this.anagramSanitization();
+    if (origin.lenght < pal.length) {
+      return -1;
+    }
+    return origin.indexOf(pal);
   };
 
 
@@ -246,15 +302,15 @@
    */
 
   String.prototype.signature = function() {
-    var buffer, object;
+    var object, sign;
     object = {};
-    buffer = typeof strict === "function" ? strict(this.palindromeSanitization()) : void 0;
-    this.forEach(function(char) {
+    sign = function(char) {
       if (object[char] == null) {
         object[char] = 0;
       }
-      return object[char]++;
-    });
+      object[char]++;
+    };
+    this.anagramSanitization().split('').forEach(sign);
     return object;
   };
 
@@ -264,15 +320,45 @@
    *
    */
 
-  String.prototype.frequencySort = function() {
+  String.prototype.sortByFrequency = function() {
     var freqSort;
     freqSort = function(a, b) {
       var valA, valB;
       valA = String.prototype.SORT_TABLE_FR[a.toLowerCase()];
       valB = String.prototype.SORT_TABLE_FR[b.toLowerCase()];
-      return valA - valB;
+      return valB - valA;
     };
     return this.split('').sort(freqSort).join('');
+  };
+
+
+  /*
+   * Retourne les mots commencant par
+   *
+   */
+
+  String.prototype.completion = function() {
+    var completionFilter, filter;
+    filter = this;
+    completionFilter = function(word) {
+      return word.startsWith(filter);
+    };
+    return String.prototype.FRENCH_WORDS.filter(completionFilter);
+  };
+
+  String.prototype.substractWord = function(word) {
+    var candidate, i, key, len, ref, signature;
+    signature = this.signature();
+    candidate = word.signature();
+    ref = Object.keys(candidate);
+    for (i = 0, len = ref.length; i < len; i++) {
+      key = ref[i];
+      if (!signature[key]) {
+        signature[key] = 0;
+      }
+      signature[key]--;
+    }
+    return signature;
   };
 
 }).call(this);

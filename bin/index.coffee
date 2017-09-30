@@ -94,34 +94,68 @@ String::SORT_TABLE_FR['à']=0.020
 String::SORT_TABLE_FR['ù']=0.001
 
 ###
+# Liste des mots en français
+# ###
+String::FRENCH_WORDS=require 'fs'
+  .readFileSync './rsc/francais.txt', { encoding: 'utf8' }
+  .split '\n'
+
+###
 # Retourne la chaîne sans accents
 # ###
 String::noAccent=()->
-  flat=this
-  String::ALPHABET_NO_ACCENT.forEach (letter)->
-    flat=this.replace String::ALPHABET_NO_ACCENT[letter], letter
+  flat=@
+  Object.keys(String::ALPHABET_NO_ACCENT).forEach (letter)->
+    flat=flat.replace String::ALPHABET_NO_ACCENT[letter], letter
     return
   return flat
 
 ###
 # Retourne la chaîne sans espace
 # ###
-String::noWhiteSpace=()-> return this.replace /\s*/g, ''
+String::noWhiteSpace=()-> return @.replace /\s*/g, ''
 
 ###
 # Supprime les accents, les espaces, en minuscule
 # ###
-String::palindromeSanitization=()->
-  return this
+String::anagramSanitization=()->
+  return @
     .noWhiteSpace()
     .noAccent()
     .toLowerCase()
 
 ###
+# Vrai si l'argument est une anagramme
+# ###
+String::isAnagram=(str)->
+  origin=@anagramSanitization().sortByFrequency()
+  anagram=str.anagramSanitization().sortByFrequency()
+  return origin==anagram
+
+###
+# Retourne le palindrome de la chaine
+# ###
+String::palindrome=()->
+  return @
+    .split ''
+    .reverse()
+    .join ''
+
+###
 # Vrai si le mot est son propre palindrome
 # ###
 String::isPalindrome=()->
-  toCheck=this.palindromeSanitization()
+  toCheck=@anagramSanitization()
+
+  ###
+  # Pour les traitements en masse
+  # on souhaite sortir rapidement
+  # ###
+  first=toCheck.charAt 0
+  last=toCheck.charAt toCheck.length-1
+  if first is not last
+    return no
+
   return toCheck == toCheck
     .split ''
     .reverse()
@@ -131,9 +165,17 @@ String::isPalindrome=()->
 # Vrai si l'argument est le palindrome du mot
 # ###
 String::isPalindromeOf=(versus)->
-  pal=this.palindromeSanitization()
-  lap=versus.palindromeSanitization()
-  return pal == lap
+  pal=@anagramSanitization()
+  lap=versus.anagramSanitization()
+
+  ###
+  # Pour les traitement en masse
+  # on souhaite sortir rapidement
+  # ###
+  if pal.length is not lap.length
+    return no
+
+  return pal==lap
     .split ''
     .reverse()
     .join ''
@@ -143,15 +185,15 @@ String::isPalindromeOf=(versus)->
 # du container
 # ###
 String::palindromicIndexOf=(str)->
-  origin=this.palindromeSanitization()
-  part=str
-    .palindromeSanitization()
+  pal=str
+    .anagramSanitization()
     .split ''
     .reverse()
     .join ''
-  return this
-    .palindromeSanitization()
-    .indexOf part isnt -1
+  origin=@anagramSanitization()
+  if origin.lenght < pal.length
+    return -1
+  return origin.indexOf pal
 
 ###
 # Filtre les lignes d'un texte
@@ -162,7 +204,7 @@ String::filterPalindromicLines=(separator='\n')->
   pushIfPalindrome=(line)->
     if line.isPalindrome()
       palindromes.push line
-  this
+  @
     .split separator
     .forEach pushIfPalindrome
   return palindromes
@@ -173,22 +215,47 @@ String::filterPalindromicLines=(separator='\n')->
 # ###
 String::signature=()->
   object={}
-  buffer=strict?this.palindromeSanitization()
-  this.forEach (char)->
+  sign=(char)->
     if not object[char]?
       object[char]=0
     object[char]++
+    return
+  @anagramSanitization()
+    .split ''
+    .forEach sign
   return object
 
 ###
 # Tri la chaîne par fréquence
 # ###
-String::frequencySort=()->
+String::sortByFrequency=()->
   freqSort=(a,b)->
     valA=String::SORT_TABLE_FR[a.toLowerCase()]
     valB=String::SORT_TABLE_FR[b.toLowerCase()]
-    return valA-valB
-  return this
+    return valB-valA
+  return @
     .split ''
     .sort freqSort
     .join ''
+
+###
+# Retourne les mots commencant par
+# ###
+String::completion=()->
+  filter=@
+  completionFilter=(word)->
+    return word
+      .startsWith filter
+  return String::FRENCH_WORDS.filter completionFilter
+
+String::substractWord=(word)->
+  signature=@signature()
+  candidate=word.signature()
+  for key in Object.keys candidate
+    if not signature[key]
+      signature[key]=0
+    signature[key]--
+    #if signature[key] is 0
+    #  delete signature[key]
+  return signature
+
