@@ -1,3 +1,5 @@
+# coffeelint: disable=max_line_length
+
 ###
 # Dictionnaire de conversion
 # ###
@@ -248,14 +250,37 @@ String::completion=()->
       .startsWith filter
   return String::FRENCH_WORDS.filter completionFilter
 
+
+###
+# Retourne la signature déduite du candidat
+# ###
 String::substractWord=(word)->
   signature=@signature()
   candidate=word.signature()
   for key in Object.keys candidate
-    if not signature[key]
-      signature[key]=0
-    signature[key]--
-    #if signature[key] is 0
-    #  delete signature[key]
+    if not signature[key]?
+      signature[key]=-1
+    else signature[key]-=candidate[key]
+    if signature[key] is 0
+      delete signature[key]
   return signature
 
+###
+# vrai si le candidat peut être utilisé pour former
+# une anagramme
+# ###
+String::isElligibleForAnagram=(candidate)->
+  substraction=@substractWord candidate
+  isNegative=(value)->
+    return 0>value
+  return not Object.values(substraction).some isNegative
+
+
+###
+# Retourne tous les mots éligible pour l'anagramme
+# ###
+String::elligiblesForAnagram=()->
+  that=@
+  filterElligible=(candidate)->
+    return that.isElligibleForAnagram candidate
+  return String::FRENCH_WORDS.filter filterElligible

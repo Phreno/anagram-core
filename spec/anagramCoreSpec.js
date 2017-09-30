@@ -4,70 +4,70 @@
 
   describe('noAccent', function() {
     return it('doit retourner une chaine sans accent', function() {
-      return expect("bepo").toBe("bépo".noAccent());
+      return expect('bepo').toBe('bépo'.noAccent());
     });
   });
 
   describe('noWhiteSpace', function() {
     return it('doit supprimer tous les espaces d\'une chaîne', function() {
-      return expect("bépo").toBe("b  é \t p \n o".noWhiteSpace());
+      return expect('bépo').toBe('b  é \t p \n o'.noWhiteSpace());
     });
   });
 
   describe('anagramSanitization', function() {
     return it('doit supprimer les espaces et les accents', function() {
-      return expect("bepo").toBe("b épo".anagramSanitization());
+      return expect('bepo').toBe('b épo'.anagramSanitization());
     });
   });
 
   describe('isAnagram', function() {
     it('vrai si l\'argument est une anagramme', function() {
-      return expect(true).toBe("bépo".isAnagram("ep\nb ô"));
+      return expect(true).toBe('bépo'.isAnagram('ep\nb ô'));
     });
     return it('faux si l\'argument n\'est pas une anagramme', function() {
-      return expect(false).toBe("bépo".isAnagram("auie"));
+      return expect(false).toBe('bépo'.isAnagram('auie'));
     });
   });
 
   describe('palindrome', function() {
     return it('doit retourner le palindrome', function() {
-      return expect("opéb").toBe("bépo".palindrome());
+      return expect('opéb').toBe('bépo'.palindrome());
     });
   });
 
   describe('isPalindrome', function() {
     it('vrai si le texte est réversible', function() {
-      expect(true).toBe("ébe".isPalindrome());
-      return expect(true).toBe("eb e".isPalindrome());
+      expect(true).toBe('ébe'.isPalindrome());
+      return expect(true).toBe('eb e'.isPalindrome());
     });
     return it('faux si le texte n\'est pas réversible', function() {
-      return expect(false).toBe("bépo".isPalindrome());
+      return expect(false).toBe('bépo'.isPalindrome());
     });
   });
 
   describe('isPalindromeOf', function() {
     it('vrai si le texte est un palindrome de l\'argument', function() {
-      return expect(true).toBe("be po".isPalindromeOf("ô\tpé\nb"));
+      return expect(true).toBe('be po'.isPalindromeOf('ô\tpé\nb'));
     });
     return it('faux si le texte n\'est pas un palindrome de l\'argument', function() {
-      return expect(false).toBe("bépo".isPalindromeOf("auie"));
+      return expect(false).toBe('bépo'.isPalindromeOf('auie'));
     });
   });
 
   describe('palindromicIndexOf', function() {
     it('retourne l\'index de la sous-chaîne assaînie', function() {
-      expect(1).toBe("bépo".palindromicIndexOf("pe"));
-      return expect(2).toBe("bépo".palindromicIndexOf("op"));
+      expect(1).toBe('bépo'.palindromicIndexOf('pe'));
+      return expect(2).toBe('bépo'.palindromicIndexOf('op'));
     });
     return it('retourne -1 si introuvable', function() {
-      return expect(-1).toBe("bépo".palindromicIndexOf("àyx"));
+      return expect(-1).toBe('bépo'.palindromicIndexOf('àyx'));
     });
   });
 
   describe('filterPalindromicLines', function() {
     return it('retourne les palindromes d\'un texte sous forme de tableau', function() {
       var palindromes;
-      palindromes = "bbb\nbépo\nauie\nauieeiau\nbépoopéb\n.àyàyxh.g.".filterPalindromicLines();
+      palindromes = 'bbb\nbépo\nauie\nauieeiau\nbépoopéb\n.àyàyxh.g.'.filterPalindromicLines();
       return expect(2).toBe(palindromes.length);
     });
   });
@@ -75,7 +75,7 @@
   describe('signature', function() {
     return it('retourne un objet qui dénombre les occurences', function() {
       var expected, signature;
-      signature = JSON.stringify("b épo\n\to".signature());
+      signature = JSON.stringify('b épo\n\to'.signature());
       expected = JSON.stringify({
         b: 1,
         e: 1,
@@ -94,7 +94,7 @@
 
   describe('completion', function() {
     return it('retourne tous les mots commençant par le mot', function() {
-      return expect(134).toBe("ana".completion().length);
+      return expect(134).toBe('ana'.completion().length);
     });
   });
 
@@ -102,12 +102,27 @@
     return it('renvoie une signature détuite', function() {
       var expected, substract;
       expected = JSON.stringify({
-        "b": 1,
-        "o": 2
+        'b': 1,
+        'o': 2
       });
-      substract = JSON.stringify("bépooo".substractWord("epo"));
+      substract = JSON.stringify('bépooo'.substractWord('epo'));
       expect(expected).toBe(substract);
-      return console.log("bépo".substractWord("ooo"));
+      expect(-2).toBe('bépo'.substractWord('ooo')['o']);
+      return expect(-1).toBe('bépo'.substractWord('a')['a']);
+    });
+  });
+
+  describe('isElligibleForAnagram', function() {
+    return it('vrai si les lettres peuvent servir a la composition du mot', function() {
+      expect(true).toBe('bépo'.isElligibleForAnagram('obpé'));
+      expect(true).toBe('ébpo'.isElligibleForAnagram('ôe'));
+      return expect(false).toBe('bépo'.isElligibleForAnagram('auie'));
+    });
+  });
+
+  describe('elligiblesForAnagram', function() {
+    return it('retrouve tous les mots elligibles', function() {
+      return console.log("moura demain".elligiblesForAnagram());
     });
   });
 

@@ -346,6 +346,12 @@
     return String.prototype.FRENCH_WORDS.filter(completionFilter);
   };
 
+
+  /*
+   * Retourne la signature déduite du candidat
+   *
+   */
+
   String.prototype.substractWord = function(word) {
     var candidate, i, key, len, ref, signature;
     signature = this.signature();
@@ -353,12 +359,41 @@
     ref = Object.keys(candidate);
     for (i = 0, len = ref.length; i < len; i++) {
       key = ref[i];
-      if (!signature[key]) {
-        signature[key] = 0;
+      if (signature[key] == null) {
+        signature[key] = -1;
+      } else {
+        signature[key] -= candidate[key];
       }
-      signature[key]--;
+      if (signature[key] === 0) {
+        delete signature[key];
+      }
     }
     return signature;
+  };
+
+
+  /*
+   * vrai si le candidat peut être utilisé pour former
+   * une anagramme
+   *
+   */
+
+  String.prototype.isElligibleForAnagram = function(candidate) {
+    var isNegative, substraction;
+    substraction = this.substractWord(candidate);
+    isNegative = function(value) {
+      return 0 > value;
+    };
+    return !Object.values(substraction).some(isNegative);
+  };
+
+  String.prototype.elligiblesForAnagram = function() {
+    var filterElligible, that;
+    that = this;
+    filterElligible = function(candidate) {
+      return that.isElligibleForAnagram(candidate);
+    };
+    return String.prototype.FRENCH_WORDS.filter(filterElligible);
   };
 
 }).call(this);
