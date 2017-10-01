@@ -314,6 +314,17 @@
     return object;
   };
 
+  Object.prototype.rawConcatenation = function() {
+    var repeat, rest, that;
+    that = this;
+    rest = '';
+    repeat = function(key) {
+      return rest += key.repeat(that[key]);
+    };
+    Object.keys(that).forEach(repeat);
+    return rest;
+  };
+
 
   /*
    * Tri la chaîne par fréquence
@@ -353,45 +364,56 @@
    */
 
   String.prototype.substractWord = function(word) {
-    var candidate, i, key, len, ref, signature;
-    signature = this.signature();
+    var candidate, substract, substraction;
+    substraction = this.signature();
     candidate = word.signature();
-    ref = Object.keys(candidate);
-    for (i = 0, len = ref.length; i < len; i++) {
-      key = ref[i];
-      if (signature[key] == null) {
-        signature[key] = -1;
+    substract = function(key) {
+      if (substraction[key] == null) {
+        return substraction[key] = 0 - candidate[key];
       } else {
-        signature[key] -= candidate[key];
+        substraction[key] -= candidate[key];
+        if (substraction[key] === 0) {
+          return delete substraction[key];
+        }
       }
-      if (signature[key] === 0) {
-        delete signature[key];
-      }
-    }
-    return signature;
+    };
+    Object.keys(candidate).forEach(substract);
+    return substraction;
   };
 
 
   /*
-   * vrai si le candidat peut être utilisé pour former
-   * une anagramme
+   *
    *
    */
 
-  String.prototype.isElligibleForAnagram = function(candidate) {
-    var isNegative, substraction;
-    substraction = this.substractWord(candidate);
-    isNegative = function(value) {
-      return 0 > value;
-    };
-    return !Object.values(substraction).some(isNegative);
+  String.prototype.containsAllCharsFrom = function(word) {
+    var letters;
+    if (this.length < word.length) {
+      return false;
+    }
+    letters = this.anagramSanitization().split('');
+    return word.anagramSanitization().split('').every(function(x) {
+      var index;
+      index = letters.indexOf(x);
+      if (~index) {
+        letters.splice(index, 1);
+        return true;
+      }
+    });
   };
+
+
+  /*
+   * Retourne tous les mots éligible pour l'anagramme
+   *
+   */
 
   String.prototype.elligiblesForAnagram = function() {
     var filterElligible, that;
     that = this;
     filterElligible = function(candidate) {
-      return that.isElligibleForAnagram(candidate);
+      return that.containsAllCharsFrom(candidate);
     };
     return String.prototype.FRENCH_WORDS.filter(filterElligible);
   };

@@ -227,6 +227,16 @@ String::signature=()->
     .forEach sign
   return object
 
+Object::rawConcatenation=()->
+  that=@
+  rest=''
+  repeat=(key)->
+    rest+=key.repeat that[key]
+  Object
+    .keys that
+    .forEach repeat
+  return rest
+
 ###
 # Tri la chaîne par fréquence
 # ###
@@ -255,26 +265,35 @@ String::completion=()->
 # Retourne la signature déduite du candidat
 # ###
 String::substractWord=(word)->
-  signature=@signature()
+  substraction=@signature()
   candidate=word.signature()
-  for key in Object.keys candidate
-    if not signature[key]?
-      signature[key]=-1
-    else signature[key]-=candidate[key]
-    if signature[key] is 0
-      delete signature[key]
-  return signature
+  substract=(key)->
+    if not substraction[key]?
+      substraction[key]=0-candidate[key]
+    else
+      substraction[key]-=candidate[key]
+      delete substraction[key] if substraction[key] is 0
+  Object
+    .keys candidate
+    .forEach substract
+  return substraction
 
 ###
-# vrai si le candidat peut être utilisé pour former
-# une anagramme
+#
 # ###
-String::isElligibleForAnagram=(candidate)->
-  substraction=@substractWord candidate
-  isNegative=(value)->
-    return 0>value
-  return not Object.values(substraction).some isNegative
-
+String::containsAllCharsFrom=(word)->
+  if @length<word.length
+    return no
+  letters = @anagramSanitization()
+    .split ''
+  word
+    .anagramSanitization()
+    .split ''
+    .every (x)->
+      index=letters.indexOf(x)
+      if (~index)
+        letters.splice(index, 1)
+        return true
 
 ###
 # Retourne tous les mots éligible pour l'anagramme
@@ -282,5 +301,5 @@ String::isElligibleForAnagram=(candidate)->
 String::elligiblesForAnagram=()->
   that=@
   filterElligible=(candidate)->
-    return that.isElligibleForAnagram candidate
+    return that.containsAllCharsFrom candidate
   return String::FRENCH_WORDS.filter filterElligible

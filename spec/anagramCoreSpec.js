@@ -112,17 +112,31 @@
     });
   });
 
-  describe('isElligibleForAnagram', function() {
+  describe('containsAllCharsFrom', function() {
     return it('vrai si les lettres peuvent servir a la composition du mot', function() {
-      expect(true).toBe('bépo'.isElligibleForAnagram('obpé'));
-      expect(true).toBe('ébpo'.isElligibleForAnagram('ôe'));
-      return expect(false).toBe('bépo'.isElligibleForAnagram('auie'));
+      expect(true).toBe('bépo'.containsAllCharsFrom('obpé'));
+      expect(true).toBe('ébpo'.containsAllCharsFrom('ôe'));
+      return expect(false).toBe('bépo'.containsAllCharsFrom('auie'));
     });
   });
 
   describe('elligiblesForAnagram', function() {
     return it('retrouve tous les mots elligibles', function() {
-      return console.log("moura demain".elligiblesForAnagram());
+      var anagrams;
+      anagrams = "analogie".elligiblesForAnagram();
+      expect(141).toBe(anagrams.length);
+      expect(-1).not.toBe(anagrams.indexOf("analogie"));
+      return expect(-1).not.toBe(anagrams.indexOf("loge"));
+    });
+  });
+
+  describe('rawConcatenation', function() {
+    return it('doit concaténer toutes les valeurs d\'un objet', function() {
+      return expect('abcc').toBe({
+        a: 1,
+        b: 1,
+        c: 2
+      }.rawConcatenation());
     });
   });
 

@@ -3,13 +3,17 @@
   "version": "1.0.0",
   "description": "Librairie de travail sur les anagrammes",
   "main": "index.js",
+  "bin": "./bin/cli.js",
   "scripts": {
     "test": "./scripts/test.sh",
-    "compile":"./scripts/compile.sh"
+    "compile": "./scripts/compile.sh"
   },
   "author": "K3rn€l_P4n1K",
   "license": "GPL-3.0",
   "devDependencies": {
     "jasmine": "^2.8.0"
+  },
+  "dependencies": {
+    "commander": "^2.11.0"
   }
 }

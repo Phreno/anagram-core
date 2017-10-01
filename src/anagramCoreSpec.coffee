@@ -76,12 +76,19 @@ describe 'substractWord',->
     expect(-2).toBe 'bépo'.substractWord('ooo')['o']
     expect(-1).toBe 'bépo'.substractWord('a')['a']
 
-describe 'isElligibleForAnagram', ->
+describe 'containsAllCharsFrom', ->
   it 'vrai si les lettres peuvent servir a la composition du mot', ->
-    expect(yes).toBe 'bépo'.isElligibleForAnagram 'obpé'
-    expect(yes).toBe 'ébpo'.isElligibleForAnagram 'ôe'
-    expect(no).toBe 'bépo'.isElligibleForAnagram 'auie'
+    expect(yes).toBe 'bépo'.containsAllCharsFrom 'obpé'
+    expect(yes).toBe 'ébpo'.containsAllCharsFrom 'ôe'
+    expect(no).toBe 'bépo'.containsAllCharsFrom   'auie'
 
 describe 'elligiblesForAnagram', ->
   it 'retrouve tous les mots elligibles', ->
-    console.log "moura demain".elligiblesForAnagram()
+    anagrams="analogie".elligiblesForAnagram()
+    expect(141).toBe anagrams.length
+    expect(-1).not.toBe anagrams.indexOf "analogie"
+    expect(-1).not.toBe anagrams.indexOf "loge"
+
+describe 'rawConcatenation', ->
+  it 'doit concaténer toutes les valeurs d\'un objet', ->
+    expect('abcc').toBe {a:1,b:1,c:2}.rawConcatenation()
