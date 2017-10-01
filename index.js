@@ -152,6 +152,10 @@
     encoding: 'utf8'
   }).split('\n');
 
+  String.prototype.reverse = function() {
+    return this.split('').reverse().join('');
+  };
+
 
   /*
    * Retourne la chaîne sans accents
@@ -319,6 +323,9 @@
     that = this;
     rest = '';
     repeat = function(key) {
+      if (that[key] < 0) {
+        that[key] *= -1;
+      }
       return rest += key.repeat(that[key]);
     };
     Object.keys(that).forEach(repeat);

@@ -102,6 +102,13 @@ String::FRENCH_WORDS=require 'fs'
   .readFileSync './rsc/francais.txt', { encoding: 'utf8' }
   .split '\n'
 
+
+
+String::reverse=()->
+  return @split ''
+    .reverse()
+    .join ''
+
 ###
 # Retourne la chaîne sans accents
 # ###
@@ -231,6 +238,7 @@ Object::rawConcatenation=()->
   that=@
   rest=''
   repeat=(key)->
+    that[key]*=-1 if that[key]<0
     rest+=key.repeat that[key]
   Object
     .keys that
