@@ -5,7 +5,7 @@ program=require 'commander'
 
 program
   .option '-t, --text <text>', 'texte source'
-  #.option '-l, --lazy', 'ne considère pas les accents'
+  .option '-l, --list', 'cache les détaille'
   #.option '-a, --anagramme', 'liste les candidats pour anagramme'
   #.option '-p, --palindrome', 'liste les candidats pour palindrome'
   .option '-f, --filter <filter>', 'filtre a appliquer lors de la recherche de résultat'
@@ -16,18 +16,23 @@ program
 displayAnagrammes=(candidate)->
   output=""
 
-  if program.detail
-    output+="#{program.text} ; "
+  if not program.list
+    output+="#{program.text} ; #{
+      program
+        .text
+        .anagramSanitization()
+        .sortByFrequency()
+    } ; "
 
   output+="#{candidate}"
 
-  if program.detail
-    substraction=program
-      .text
+  if not program.list
+    substraction=source
       .substractWord candidate
       .rawConcatenation()
       .sortByFrequency()
     output+=" ; #{substraction}"
+
     if program.filter
       output+=" ; #{program.filter}"
 

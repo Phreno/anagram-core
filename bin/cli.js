@@ -7,17 +7,17 @@
 
   program = require('commander');
 
-  program.option('-t, --text <text>', 'texte source').option('-f, --filter <filter>', 'filtre a appliquer lors de la recherche de résultat').option('-d, --detail', 'détail les résultats').parse(process.argv);
+  program.option('-t, --text <text>', 'texte source').option('-l, --list', 'cache les détaille').option('-f, --filter <filter>', 'filtre a appliquer lors de la recherche de résultat').option('-d, --detail', 'détail les résultats').parse(process.argv);
 
   displayAnagrammes = function(candidate) {
     var output, substraction;
     output = "";
-    if (program.detail) {
-      output += program.text + " ; ";
+    if (!program.list) {
+      output += program.text + " ; " + (program.text.anagramSanitization().sortByFrequency()) + " ; ";
     }
     output += "" + candidate;
-    if (program.detail) {
-      substraction = program.text.substractWord(candidate).rawConcatenation().sortByFrequency();
+    if (!program.list) {
+      substraction = source.substractWord(candidate).rawConcatenation().sortByFrequency();
       output += " ; " + substraction;
       if (program.filter) {
         output += " ; " + program.filter;
