@@ -2,6 +2,7 @@
   <head>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
   </head>
   <body>
@@ -105,6 +106,12 @@
         },
       },
       computed: {
+        isEmptySource: function(){
+          let empty = "";
+          return empty === this.workbench.source.value
+          .toLowerCase()
+          .replace(/\s/g,empty);
+        }
       },
       methods: {
         addSelectionToTarget: function(event){
@@ -121,29 +128,42 @@
         },
         updateVisualization: function(event){
           console.log("updating visualization", event);
-          var myChart = new Chart(document.getElementById("canvas"), {
-            type: 'bar',
+          
+          let getSignatureFrom = function(text){
+            console.log("getting signature from ", text);
+            let empty = "";
+            let sanitized = text
+            .toLowerCase()
+            .replace(/\s/g,empty);
+            let charArray = sanitized.split('');
+            let signature = {};
+            
+            if(empty===sanitized){
+              return signature;
+            }
+            
+            let populate = function(letter){
+              let increment = 1;
+              if(signature[letter]){
+                signature[letter]+=increment;
+              } else signature[letter] = increment;
+            }
+            charArray.forEach(populate);
+            console.log(signature);
+            return signature;
+          };
+          
+          
+          let signature = getSignatureFrom(event.target.value);
+          let canvas = document.getElementById("canvas");
+       
+            let myChart = new Chart(canvas, {
+            type: 'horizontalBar',
             data: {
-              labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+              labels: Object.keys(signature),
               datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
-                backgroundColor: [
-                  'rgba(255, 99, 132, 0.2)',
-                  'rgba(54, 162, 235, 0.2)',
-                  'rgba(255, 206, 86, 0.2)',
-                  'rgba(75, 192, 192, 0.2)',
-                  'rgba(153, 102, 255, 0.2)',
-                  'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                  'rgba(255,99,132,1)',
-                  'rgba(54, 162, 235, 1)',
-                  'rgba(255, 206, 86, 1)',
-                  'rgba(75, 192, 192, 1)',
-                  'rgba(153, 102, 255, 1)',
-                  'rgba(255, 159, 64, 1)'
-                ],
+                label: 'Occurences des lettres',
+                data: Object.values(signature),
                 borderWidth: 1
               }]
             },
@@ -156,7 +176,9 @@
                 }]
               }
             }
-          })
+          });
+          
+          
         }
       }
     });
