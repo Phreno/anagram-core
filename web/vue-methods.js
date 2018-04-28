@@ -2,6 +2,7 @@ vue.configuration.methods = {
   /*
    * Ajoute les mots du filtre courant à la liste des mots du texte cible
    */
+  // @auto-fold here
   addSelectionToTarget: function (event) {
     console.log("adding selection to target", event);
     this.workbench.target.words.push(...event.target.value.split(/\s/));
@@ -12,6 +13,7 @@ vue.configuration.methods = {
   /*
    * Supprime un mot de la liste des mots du texte cible
    */
+  // @auto-fold here
   removeWordFromTarget: function (event) {
     console.log("removing word from target", event);
     let words = this.workbench.target.words;
@@ -25,6 +27,7 @@ vue.configuration.methods = {
   /*
    * Positionne la fenêtre de visualisation des résulats du filtre (fais descendre la fenêtre)
    */
+  // @auto-fold here
   incrementCurrentOffset(event) {
     console.log("incrementing current offset", event);
     this.wordlist.currentOffset += NAVIGATION_INCREMENT;
@@ -33,6 +36,7 @@ vue.configuration.methods = {
   /*
    * Positionne la fenêtre de visualisation des résultats du filtre (fais remonter la fenêtre)
    */
+  // @auto-fold here
   decrementCurrentOffset(event) {
     console.log("decrementing current offset", event);
     if (0 >= this.wordlist.currentOffset) {
@@ -47,56 +51,47 @@ vue.configuration.methods = {
    * Met à jour le composant de visualisation
    * TODO: modulariser
    */
+  // @auto-fold here
   updateVisualization: function (event) {
     console.log("updating visualization", event);
 
-    let getSignatureFrom = function (text) {
-      console.log("getting signature from ", text);
-      let sanitized = text.toLowerCase()
-        .replace(/\s/g, EMPTY);
-      let charArray = sanitized.split(EMPTY);
-      let signature = toolbox.getNewEmptySignature();
+    let sourceSignature = this.sourceSignature;
+    let targetSignature = this.targetSignature;
 
-      if (EMPTY === sanitized) {
-        return signature;
-      }
+    let canvas = document.getElementById(CANVAS_SELECTOR);
 
-      let populate = function (letter) {
-        let increment = 1;
-        if (undefined === signature[letter]) {
-          console.log(`"${letter}" is out of bound! adding "${letter}" to the dictionnary`);
-          signature[letter] = increment;
-        } else signature[letter] += increment;
-      }
-      charArray.forEach(populate);
-      console.log(signature);
-      return signature;
-    };
-
-    let sourceSignature = getSignatureFrom(this.workbench.source.value);
-    let targetSignature = getSignatureFrom(this.workbench.target.words.join(EMPTY));
-
-    let canvas = document.getElementById("canvas");
-
+    // TODO: modularise
+    // @auto-fold here
     let myChart = new Chart(canvas, {
       type: 'bar',
       data: {
         labels: Object.keys(sourceSignature),
         datasets: [{
+          label: 'Occurences des lettes du texte cible',
+          data: Object.values(targetSignature),
+          backgroundColor: Object.values(sourceSignature)
+            .map((sourceOccurences, index) => {
+              let color = 'blue';
+              if (sourceOccurences === Object.values(targetSignature)[index]) {
+                color = 'green';
+              } else if (sourceOccurences < Object.values(targetSignature)[index]) {
+                color = 'red';
+              }
+              return color;
+            }),
+          borderWidth: 1
+        }, {
           label: 'Occurences des lettres du texte source',
           data: Object.values(sourceSignature),
           backgroundColor: 'black',
-          borderWidth: 1
-        }, {
-          label: 'Occurences des lettes du texte cible',
-          data: Object.values(targetSignature),
-          backgroundColor: 'blue',
           borderWidth: 1
         }]
       },
       options: {
         scales: {
-          xAxes: [],
+          xAxes: [{
+            stacked: true
+          }],
           yAxes: [{
             ticks: {
               beginAtZero: true
