@@ -8,6 +8,8 @@
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
           integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
           crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet">
   </head>
 
   <body>
@@ -65,14 +67,36 @@
         </div>
 
         <div class="col">
+
+          <!-- LISTE DES MOTS -->
           <div class="card"
                style="height:100%">
             <div class="card-header"></div>
             <div class="card-body">
               <ul class="list-group">
+                <!-- navigation vers le haut -->
+                <li class="list-group-item">
+                  <p class="text-center">
+                    <button class="btn btn-primary"
+                            @click="incrementCurrentOffset">
+                      <i class="material-icons">keyboard_arrow_up</i>
+                    </button>
+                  </p>
+                </li>
+                <!-- liste des mots disponnibles pour le filtre -->
                 <li class="list-group-item"
                     v-for="word in wordlistFiltered"
                     v-text="word"></li>
+                <!-- navigation vers le bas -->
+                <li class="list-group-item">
+                  <p class="text-center">
+                    <button class="btn btn-primary"
+                            @click="decrementCurrentOffset">
+                      <i class="material-icons">keyboard_arrow_down</i>
+                    </button>
+                  </p>
+                </li>
+
               </ul>
             </div>
             <div class="card-footer"></div>

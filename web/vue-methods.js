@@ -1,5 +1,7 @@
 vue.configuration.methods = {
-
+  /*
+   * Ajoute les mots du filtre courant à la liste des mots du texte cible
+   */
   addSelectionToTarget: function (event) {
     console.log("adding selection to target", event);
     this.workbench.target.words.push(...event.target.value.split(/\s/));
@@ -7,6 +9,9 @@ vue.configuration.methods = {
     this.updateVisualization();
   },
 
+  /*
+   * Supprime un mot de la liste des mots du texte cible
+   */
   removeWordFromTarget: function (event) {
     console.log("removing word from target", event);
     let words = this.workbench.target.words;
@@ -17,6 +22,31 @@ vue.configuration.methods = {
     this.updateVisualization();
   },
 
+  /*
+   * Positionne la fenêtre de visualisation des résulats du filtre (fais descendre la fenêtre)
+   */
+  incrementCurrentOffset(event) {
+    console.log("incrementing current offset", event);
+    this.wordlist.currentOffset += NAVIGATION_INCREMENT;
+  },
+
+  /*
+   * Positionne la fenêtre de visualisation des résultats du filtre (fais remonter la fenêtre)
+   */
+  decrementCurrentOffset(event) {
+    console.log("decrementing current offset", event);
+    if (0 >= this.wordlist.currentOffset) {
+      this.wordlist.currentOffset = 0;
+      // on ne souhaite pas effectuer un slice négatif
+      return;
+    }
+    this.wordlist.currentOffset -= NAVIGATION_INCREMENT;
+  },
+
+  /*
+   * Met à jour le composant de visualisation
+   * TODO: modulariser
+   */
   updateVisualization: function (event) {
     console.log("updating visualization", event);
 
@@ -25,33 +55,7 @@ vue.configuration.methods = {
       let sanitized = text.toLowerCase()
         .replace(/\s/g, EMPTY);
       let charArray = sanitized.split(EMPTY);
-      let signature = {
-        a: 0,
-        b: 0,
-        c: 0,
-        d: 0,
-        e: 0,
-        f: 0,
-        g: 0,
-        h: 0,
-        i: 0,
-        j: 0,
-        k: 0,
-        l: 0,
-        m: 0,
-        n: 0,
-        o: 0,
-        p: 0,
-        q: 0,
-        r: 0,
-        s: 0,
-        t: 0,
-        u: 0,
-        v: 0,
-        w: 0,
-        x: 0,
-        z: 0
-      };
+      let signature = toolbox.getNewEmptySignature();
 
       if (EMPTY === sanitized) {
         return signature;

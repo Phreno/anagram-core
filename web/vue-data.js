@@ -5,7 +5,8 @@ vue.configuration.data = {
     }
   },
   wordlist: {
-    dictionnary: []
+    currentOffset: 0,
+    navigationInterval: null
   },
   workbench: {
     source: {
